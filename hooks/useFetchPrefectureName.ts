@@ -8,15 +8,14 @@ export const useFetchPrefectureName = async () => {
     });
 
     const data = await res.json();
-    const prefectures = [...data.result];
+    const prefectures = data.result;
 
-    console.log("This is prefectures: ", prefectures);
-
-    return {
-      props: {
-        prefectures,
-      },
-    };
+    return prefectures;
+    // return {
+    //   props: {
+    //     prefectures,
+    //   },
+    // };
   } catch (error) {
     return {
       props: {
