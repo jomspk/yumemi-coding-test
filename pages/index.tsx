@@ -3,10 +3,62 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import Prefectures from "@/components/Prefectures";
-
+import Graph from "@/components/Graph";
+import { useState, useEffect } from "react";
+import { useFetchPrefectureName } from "@/hooks/useFetchPrefectureName";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const [prefectures, setPrefectures] = useState(null);
+  const [prefPopulation, setPrefPopulation] = useState([]);
+
+  useFetchPrefectureName().then((prefectureList) => {
+    if (prefectures == null) {
+      setPrefectures(prefectureList);
+    }
+  });
+
+  const fetchPopulation = async (prefCode) => {
+    try {
+      const fetchedPopulationData = await fetch("https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=" + prefCode, {
+        method: "GET",
+        headers: {
+          "X-API-KEY": process.env.NEXT_PUBLIC_APIKEY,
+        },
+      });
+
+      const jsonPopulation = await fetchedPopulationData.json();
+      const populationList = jsonPopulation.result;
+      return populationList;
+    } catch (error) {
+      window.alert("データ取得に失敗しました");
+    }
+  };
+
+  const handleCheck = (prefName, prefCode, check) => {
+    let availPrefPopulation = [...prefPopulation];
+
+    if (check) {
+      if (availPrefPopulation.findIndex((value) => value.prefName === prefName) !== -1) return;
+      fetchPopulation(prefCode)
+        .then((results) => {
+          availPrefPopulation.push({
+            prefName: prefName,
+            data: results.data[0].data,
+          });
+
+          setPrefPopulation(availPrefPopulation);
+        })
+        .catch((error) => {
+          return;
+        });
+    } else {
+      const deleteIndex = availPrefPopulation.findIndex((value) => value.prefName === prefName);
+      if (deleteIndex === -1) return;
+      availPrefPopulation.splice(deleteIndex, 1);
+      setPrefPopulation(availPrefPopulation);
+    }
+  };
   return (
     <>
       <Head>
@@ -16,8 +68,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
-        <Prefectures />
-        <div className={styles.description}>
+        <Prefectures prefectures={prefectures} onChange={handleCheck} />
+        <Graph populationList={prefPopulation} />
+        {/* <div className={styles.description}>
           <p>
             Get started by editing&nbsp;
             <code className={styles.code}>pages/index.tsx</code>
@@ -66,7 +119,7 @@ export default function Home() {
             </h2>
             <p>Instantly deploy your Next.js site to a shareable URL with&nbsp;Vercel.</p>
           </a>
-        </div>
+        </div> */}
       </main>
     </>
   );
