@@ -1,16 +1,25 @@
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
+import SelectGraphData from "./molecules/SelectGraphData";
 
 import styles from "../styles/components/Graph.module.scss";
+import { useState } from "react";
 
 const Graph = ({ populationList }) => {
   let series = [];
   let categories = [];
+  const populationTypeMap = {
+    totalPopulation: [0, "総人口推移"],
+    youthPopulation: [1, "若年人口"],
+    workingAgePopulation: [2, "生産年齢人口"],
+    elderlyPopulation: [3, "老年人口"],
+  };
+  const [populationType, setPopulationType] = useState("totalPopulation");
 
   for (let population of populationList) {
     let populationDataList = [];
-
-    for (let populationData of population.data) {
+    const populationTypeData = population.data[populationTypeMap[populationType][0]];
+    for (let populationData of populationTypeData.data) {
       populationDataList.push(populationData.value);
       categories.push(populationData.year);
     }
@@ -23,7 +32,7 @@ const Graph = ({ populationList }) => {
   }
   const options = {
     title: {
-      text: "総人口推移",
+      text: populationTypeMap[populationType][1],
     },
     xAxis: {
       title: {
@@ -41,9 +50,12 @@ const Graph = ({ populationList }) => {
   };
 
   return (
-    <div className={styles["graph"]}>
-      <HighchartsReact highcharts={Highcharts} options={options} />
-    </div>
+    <>
+      <SelectGraphData selectData={setPopulationType} />
+      <div className={styles["graph"]}>
+        <HighchartsReact highcharts={Highcharts} options={options} />
+      </div>
+    </>
   );
 };
 

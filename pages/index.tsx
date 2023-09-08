@@ -44,7 +44,8 @@ export default function Home() {
         .then((results) => {
           availPrefPopulation.push({
             prefName: prefName,
-            data: results.data[0].data,
+            data: results.data,
+            // data: results.data[0].data,
           });
 
           setPrefPopulation(availPrefPopulation);
