@@ -1,8 +1,8 @@
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
-import SelectGraphData from "./molecules/SelectGraphData";
+import SelectGraphData from "../molecules/SelectGraphData";
 
-import styles from "../styles/components/Graph.module.scss";
+import styles from "../../styles/components/organisms/Graph.module.scss";
 import { useState } from "react";
 
 const Graph = ({ populationList }) => {

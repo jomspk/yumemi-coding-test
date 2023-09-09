@@ -1,4 +1,4 @@
-import styles from "../styles/components/Prefecture.module.scss";
+import styles from "../../styles/components/organisms/Prefecture.module.scss";
 import { useFetchPrefectureName } from "@/hooks/useFetchPrefectureName";
 import { useState, useEffect } from "react";
 import { idText } from "typescript";
