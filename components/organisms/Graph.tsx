@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PopulationType, Population, PopulationTypeData, PopulationArrayData } from '@/type/Types';
 
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
@@ -6,14 +7,13 @@ import SelectGraphData from '../molecules/SelectGraphData';
 
 import styles from '../../styles/components/organisms/Graph.module.scss';
 
-type PopulationType = {
-  totalPopulation: Array<number | string>;
-  youthPopulation: Array<number | string>;
-  workingAgePopulation: Array<number | string>;
-  elderPopulation: Array<number | string>;
+type Props = {
+  populationList: Population;
 };
 
-const Graph = ({ populationList }) => {
+const Graph = (props: Props) => {
+  const { populationList } = props;
+
   const series: Highcharts.SeriesOptionsType[] = [];
   const categories = [];
   const populationTypeMap: PopulationType = {
@@ -22,19 +22,23 @@ const Graph = ({ populationList }) => {
     workingAgePopulation: [2, '生産年齢人口'],
     elderlyPopulation: [3, '老年人口'],
   };
-  const [populationType, setPopulationType] = useState<string>('totalPopulation');
 
-  populationList.map((population) => {
+  const [populationType, setPopulationType] = useState<string>('totalPopulation');
+  const typeArray = populationTypeMap[populationType] as Array<number | string>;
+
+  populationList.map((population: Population) => {
     const populationDataList = [];
-    const populationTypeData = population.data[populationTypeMap[populationType][0]];
-    populationTypeData.data.map((populationData) => {
+    const accessData = typeArray[0] as number;
+    const populationArrayData = population.data as PopulationArrayData[];
+    const popuTypeData: PopulationTypeData = populationArrayData[accessData];
+    popuTypeData.data.map((populationData) => {
       populationDataList.push(populationData.value);
       categories.push(populationData.year);
       return true;
     });
     series.push({
       type: 'line',
-      name: population.prefName,
+      name: population.prefName as string,
       data: populationDataList,
     });
     return true;
@@ -42,13 +46,13 @@ const Graph = ({ populationList }) => {
 
   const options = {
     title: {
-      text: populationTypeMap[populationType][1],
+      text: typeArray[1],
     },
     xAxis: {
       title: {
         text: '年度',
       },
-      categories: categories,
+      categories,
     },
     yAxis: {
       title: {

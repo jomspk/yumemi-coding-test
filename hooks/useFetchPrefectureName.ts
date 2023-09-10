@@ -1,4 +1,6 @@
-export const useFetchPrefectureName = async () => {
+import { PrefecturesRes } from '@/type/Types';
+
+const useFetchPrefectureName = async () => {
   try {
     const res = await fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {
       method: 'GET',
@@ -7,7 +9,7 @@ export const useFetchPrefectureName = async () => {
       },
     });
 
-    const data = await res.json();
+    const data = (await res.json()) as PrefecturesRes;
     const prefectures = data.result;
 
     return prefectures;
@@ -20,3 +22,5 @@ export const useFetchPrefectureName = async () => {
     };
   }
 };
+
+export default useFetchPrefectureName;

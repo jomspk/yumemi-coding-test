@@ -11,10 +11,10 @@
     "sourceType": "module",
     "project": "./tsconfig.eslint.json"
   },
-  // "ignorePatterns": ["dist"],
   "extends": ["next/core-web-vitals", "prettier", "airbnb-base", "airbnb-typescript/base", "plugin:@typescript-eslint/recommended-requiring-type-checking"],
   "rules": {
     "dot-notation": "off",
-    "@typescript-eslint/dot-notation": "off"
+    "@typescript-eslint/dot-notation": "off",
+    "object-curly-newline": "off"
   }
 }

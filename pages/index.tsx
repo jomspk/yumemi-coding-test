@@ -2,37 +2,11 @@ import styles from '@/styles/components/organisms/Home.module.scss';
 import Prefectures from '@/components/organisms/Prefectures';
 import Graph from '@/components/organisms/Graph';
 import { useState } from 'react';
-import { useFetchPrefectureName } from '@/hooks/useFetchPrefectureName';
-
-type PopulationRes = {
-  message: string;
-  result: {
-    boundaryYear: number;
-    data: {
-      label: string;
-      data: {
-        year: number;
-        value: number;
-      }[];
-    }[];
-  };
-};
-
-type PrefecturesRes = {
-  message: string;
-  result: {
-    prefCode: number;
-    prefName: string;
-  }[];
-};
-
-type Population = {
-  prefName: string;
-  data: { year: number; value: number }[];
-}[];
+import { PopulationRes, Population, PopulationTypeData } from '@/type/Types';
+import useFetchPrefectureName from '@/hooks/useFetchPrefectureName';
 
 export default function Home() {
-  const [prefectures, setPrefectures] = useState<PrefecturesRes | null>(null);
+  const [prefectures, setPrefectures] = useState<Prefectures[] | null>(null);
   const [prefPopulation, setPrefPopulation] = useState<Population>([]);
 
   useFetchPrefectureName()
@@ -41,22 +15,21 @@ export default function Home() {
         setPrefectures(prefectureList);
       }
     })
-    .catch((error) => {});
+    .catch(() => {
+      window.alert('データ取得に失敗しました');
+    });
 
   const fetchPopulation = async (prefCode) => {
     try {
-      const fetchedPopulationData: Promise<T> = await fetch(`https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode= + ${prefCode}`, {
+      const fetchedPopulationData = await fetch(`https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode= + ${prefCode}`, {
         method: 'GET',
         headers: {
           'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
         },
       });
-      console.log('This is fetched: ', fetchedPopulationData);
 
       const jsonPopulation = (await fetchedPopulationData.json()) as PopulationRes;
-      console.log('This is jsonPopu: ', jsonPopulation);
       const populationList = jsonPopulation.result;
-      console.log('This is populationList: ', populationList);
       return populationList;
     } catch (error) {
       window.alert('データ取得に失敗しました');
@@ -71,14 +44,17 @@ export default function Home() {
       if (availPrefPopulation.findIndex((value) => value.prefName === prefName) !== -1) return;
       fetchPopulation(prefCode)
         .then((results) => {
+          const data = results.data as PopulationTypeData;
           availPrefPopulation.push({
             prefName,
-            data: results.data,
+            data,
           });
 
           setPrefPopulation(availPrefPopulation);
         })
-        .catch((error) => {});
+        .catch(() => {
+          window.alert('データ取得に失敗しました');
+        });
     } else {
       const deleteIndex = availPrefPopulation.findIndex((value) => value.prefName === prefName);
       if (deleteIndex === -1) return;
