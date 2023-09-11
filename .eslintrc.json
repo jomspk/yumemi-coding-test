@@ -11,6 +11,7 @@
     "sourceType": "module",
     "project": "./tsconfig.eslint.json"
   },
+  "ignorePatterns": ["jest.config.js"],
   "extends": ["next/core-web-vitals", "prettier", "airbnb-base", "airbnb-typescript/base", "plugin:@typescript-eslint/recommended-requiring-type-checking"],
   "rules": {
     "dot-notation": "off",
