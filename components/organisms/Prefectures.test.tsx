@@ -12,35 +12,35 @@ describe('Prefectureコンポーネントのテスト', () => {
   ];
   const handleClick = jest.fn();
   it('正しくレンダリングされる', () => {
-    //Arrange
+    //  Arrange
     render(<Prefectures prefectures={mockData} onChange={handleClick} />);
 
-    //Assert
+    //  Assert
     expect(screen.getByRole('checkbox', { name: mockData.prefName })).toBeInTheDocument();
   });
 
-  it('チェックボックスをチェックを入れたときの挙動', async () => {
-    //Arrange
+  it('チェックボックスをチェックを入れたときの挙動', () => {
+    //  Arrange
     render(<Prefectures prefectures={mockData} onChange={handleClick} />);
 
-    //Act
+    //  Act
     const checkbox = screen.getByRole('checkbox', { name: mockData.prefName });
     fireEvent.click(checkbox);
 
-    //Assert
+    //  Assert
     expect(handleClick).toHaveBeenCalledWith('北海道', 1, true);
   });
 
-  it('チェックボックスをチェックを外したときの挙動', async () => {
-    //Arrange
+  it('チェックボックスをチェックを外したときの挙動', () => {
+    //  Arrange
     render(<Prefectures prefectures={mockData} onChange={handleClick} />);
 
-    //Act
+    //  Act
     const checkbox = screen.getByRole('checkbox', { name: mockData.prefName });
     fireEvent.click(checkbox);
     fireEvent.click(checkbox);
 
-    //Assert
+    //  Assert
     expect(handleClick).toHaveBeenCalledWith('北海道', 1, false);
   });
 });
