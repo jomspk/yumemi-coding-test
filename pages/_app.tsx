@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import '@/styles/Globals.module.scss';
 import type { AppProps } from 'next/app';
 import Header from '@/components/organisms/Header';
 
