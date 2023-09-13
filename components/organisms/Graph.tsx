@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PopulationType, Population, PopulationTypeData, PopulationArrayData } from '@/type/Types';
+import { PopulationType, Population, PopulationTypeData } from '@/type/Types';
 
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
@@ -8,14 +8,14 @@ import SelectGraphData from '../molecules/SelectGraphData';
 import styles from '../../styles/components/organisms/Graph.module.scss';
 
 type Props = {
-  populationList: Population;
+  populationList: Population[];
 };
 
 const Graph = (props: Props) => {
   const { populationList } = props;
 
   const series: Highcharts.SeriesOptionsType[] = [];
-  const categories = [];
+  const categories: Array<number> = [];
   const populationTypeMap: PopulationType = {
     totalPopulation: [0, '総人口推移'],
     youthPopulation: [1, '若年人口'],
@@ -24,12 +24,12 @@ const Graph = (props: Props) => {
   };
 
   const [populationType, setPopulationType] = useState<string>('totalPopulation');
-  const typeArray = populationTypeMap[populationType] as Array<number | string>;
+  const typeArray = populationTypeMap[populationType];
 
   populationList.map((population: Population) => {
-    const populationDataList = [];
+    const populationDataList: Array<number> = [];
     const accessData = typeArray[0] as number;
-    const populationArrayData = population.data as PopulationArrayData[];
+    const populationArrayData = population.data;
     const popuTypeData: PopulationTypeData = populationArrayData[accessData];
     popuTypeData.data.map((populationData) => {
       populationDataList.push(populationData.value);
@@ -38,7 +38,7 @@ const Graph = (props: Props) => {
     });
     series.push({
       type: 'line',
-      name: population.prefName as string,
+      name: population.prefName,
       data: populationDataList,
     });
     return true;
