@@ -1,0 +1,17 @@
+.check-box {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  justify-content: flex-start;
+  &__element {
+    border-radius: 25px;
+    border: solid 2px;
+    text-align: center;
+    padding: 4px;
+    margin: 0.5rem;
+    &--pointer {
+      display: contents;
+      cursor: pointer;
+    }
+  }
+}
