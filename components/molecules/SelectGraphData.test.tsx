@@ -9,7 +9,7 @@ describe('SelectGraphDataコンポーネントのテスト', () => {
     const handleClick = jest.fn();
     render(<SelectGraphData selectData={handleClick} />);
 
-    //Assert
+    //  Assert
     expect(screen.getByRole('option', { name: '総人口' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: '若年人口' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: '生産年齢人口' })).toBeInTheDocument();
@@ -21,10 +21,10 @@ describe('SelectGraphDataコンポーネントのテスト', () => {
     const handleClick = jest.fn();
     render(<SelectGraphData selectData={handleClick} />);
 
-    //Act
+    //  Act
     await userEvent.selectOptions(screen.getByRole('combobox'), '若年人口');
 
-    //Assert
+    //  Assert
     expect(screen.getByRole('option', { name: '総人口' }).selected).toBe(false);
     expect(screen.getByRole('option', { name: '若年人口' }).selected).toBe(true);
     expect(screen.getByRole('option', { name: '生産年齢人口' }).selected).toBe(false);
@@ -32,15 +32,15 @@ describe('SelectGraphDataコンポーネントのテスト', () => {
   });
 
   it('クリック時にonClickイベントハンドラがトリガーされる', () => {
-    //Arrange
+    //  Arrange
     const handleClick = jest.fn();
     render(<SelectGraphData selectData={handleClick} />);
 
-    //Act
+    //  Act
     const selectElement = screen.getByRole('combobox');
     fireEvent.change(selectElement, { target: { value: 'youthPopulation' } });
 
-    //Assert
+    //  Assert
     expect(handleClick).toHaveBeenCalled();
   });
 });

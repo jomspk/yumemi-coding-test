@@ -5,7 +5,7 @@ const useFetchPrefectureName = async () => {
     const res = await fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {
       method: 'GET',
       headers: {
-        'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
+        'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY || '',
       },
     });
 
@@ -14,12 +14,7 @@ const useFetchPrefectureName = async () => {
 
     return prefectures;
   } catch (error) {
-    return {
-      props: {
-        prefectures: [],
-        error: JSON.stringify(error),
-      },
-    };
+    return null;
   }
 };
 

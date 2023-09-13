@@ -2,12 +2,12 @@ import styles from '@/styles/components/organisms/Home.module.scss';
 import Prefectures from '@/components/organisms/Prefectures';
 import Graph from '@/components/organisms/Graph';
 import { useState } from 'react';
-import { PopulationRes, Population, PopulationTypeData } from '@/type/Types';
+import { PopulationRes, Population, Prefecture } from '@/type/Types';
 import useFetchPrefectureName from '@/hooks/useFetchPrefectureName';
 
 export default function Home() {
-  const [prefectures, setPrefectures] = useState<Prefectures[] | null>(null);
-  const [prefPopulation, setPrefPopulation] = useState<Population>([]);
+  const [prefectures, setPrefectures] = useState<Prefecture[] | null>(null);
+  const [prefPopulation, setPrefPopulation] = useState<Population[]>([]);
 
   useFetchPrefectureName()
     .then((prefectureList) => {
@@ -19,12 +19,12 @@ export default function Home() {
       window.alert('データ取得に失敗しました');
     });
 
-  const fetchPopulation = async (prefCode) => {
+  const fetchPopulation = async (prefCode: number) => {
     try {
       const fetchedPopulationData = await fetch(`https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode= + ${prefCode}`, {
         method: 'GET',
         headers: {
-          'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
+          'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY || '',
         },
       });
 
@@ -33,8 +33,8 @@ export default function Home() {
       return populationList;
     } catch (error) {
       window.alert('データ取得に失敗しました');
+      return null;
     }
-    return true;
   };
 
   const handleCheck = (prefName: string, prefCode: number, check: boolean) => {
@@ -44,10 +44,10 @@ export default function Home() {
       if (availPrefPopulation.findIndex((value) => value.prefName === prefName) !== -1) return;
       fetchPopulation(prefCode)
         .then((results) => {
-          const data = results.data as PopulationTypeData;
+          if (results == null) throw new Error('Failure to aquire data');
           availPrefPopulation.push({
             prefName,
-            data,
+            data: results.data,
           });
 
           setPrefPopulation(availPrefPopulation);
